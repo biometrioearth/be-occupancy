@@ -72,7 +72,7 @@ occ_rast <- rast(occ_rast_list)
 
 # Occupancy data frame
 occ_df <- as.data.frame(occ_rast, cell=TRUE)
-names(occ_df)<- c("cell", "d2protec", "d2roads","asterdem", "asterslope", "theight")
+names(occ_df)<- c("cell", "d2protec", "d2roads","asterdem","esaglc", "asterslope", "theight")
 occ_df <- occ_df[complete.cases(occ_df),]
 
 
