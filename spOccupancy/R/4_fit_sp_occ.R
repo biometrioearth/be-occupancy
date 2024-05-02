@@ -35,7 +35,7 @@ coords <- geom(sampling_sites)[,c("x","y")]
 coords <- data.matrix(coords)
 
 # Choose a single species
-y = y[1,,]
+y = y[1,,]#collard peccary
 
 occ_table <- list(y=y,
                   occ.covs=occ.cov,
@@ -55,10 +55,11 @@ out <- spPGOcc(occ.formula = occ.formula,
                n.thin = 4, n.chains = 3, verbose = FALSE, k.fold = 9)
 
 ## Predict on whole area
-# Load occupancy rasters into a multilayer brick
-occ_rast_files <- list.files(here("spOccupancy", "data", "occ"),
+occ_rast_files <- list.files("C:/Users/AmaBoakye/Work/Occupancy_Modelling//spOccupancy/Data/500m_resampled/Occu/",
                              pattern = "\\.tif$",
                              full.names = TRUE)
+
+
 occ_rast_list <- list()
 counter <- 0
 for (r in occ_rast_files){
@@ -71,11 +72,12 @@ occ_rast <- rast(occ_rast_list)
 
 # Occupancy data frame
 occ_df <- as.data.frame(occ_rast, cell=TRUE)
-names(occ_df)<- c("cell", "d2roads", "d2protec", "asterdem", "asterslope", "esalc", "theight")
+names(occ_df)<- c("cell", "d2protec", "d2roads","asterdem", "asterslope", "theight")
 occ_df <- occ_df[complete.cases(occ_df),]
 
-d2roads <- (occ_df$d2roads - mean(occ_table$occ.covs[, 1])) / sd(occ_table$occ.covs[, 1])
-d2protec <- (occ_df$d2protec - mean(occ_table$occ.covs[, 2])) / sd(occ_table$occ.covs[, 2])
+
+d2protec <- (occ_df$d2protec - mean(occ_table$occ.covs[, 1])) / sd(occ_table$occ.covs[, 1])
+d2roads <- (occ_df$d2roads - mean(occ_table$occ.covs[, 2])) / sd(occ_table$occ.covs[, 2])
 asterdem <- (occ_df$asterdem - mean(occ_table$occ.covs[, 3])) / sd(occ_table$occ.covs[, 3])
 asterslope <- (occ_df$asterslope - mean(occ_table$occ.covs[, 4])) / sd(occ_table$occ.covs[, 4])
 theight <- (occ_df$theight - mean(occ_table$occ.covs[, 5])) / sd(occ_table$occ.covs[, 5])
@@ -84,5 +86,19 @@ coords <- xyFromCell(occ_rast, occ_df$cell)
 
 X.0 <- cbind(d2roads, d2protec, asterdem, asterslope, asterslope, theight) 
 out.pred <- predict(out, X.0=X.0, coords.0=coords)
+mean.psi = apply(out.pred$psi.0.samples, 2, mean)
 
+###write raster
+alt.rs <- rast(here::here("spOccupancy", "Data", "500m_resampled", "Occu", "_dist2roads_cropped_cropped.tif"))
+
+z <- alt.rs
+z[occ_df$cell] <- mean.psi
+plot(z)
+z[z>1] <- NA
+plot(z)
+
+writeRaster(z, filename="predicted_occupancy.tif",overwrite=TRUE)
+
+waicOcc(out)
+out$k.fold.deviance
 
