@@ -11,9 +11,10 @@ library("lubridate")
 # [species, sampling sites, sampling surveys]
 # In this case [12, 373, 3]
 
-cam_data <- read.csv(here("spOccupancy", "data", "ama_detections_fix 1.csv")) 
+setwd("C:/Users/AmaBoakye/Work/Occupancy_Modelling")
 
-# Delete detections with low scores
+cam_data <- read.csv(here("spOccupancy", "Data", "ama_detections_fix 1.csv")) 
+
 cam_data <- cam_data[cam_data$score>0.90,]
 
 cam_data_spatial <- cam_data[,c("species", "latitude", "longitude", "sampling_area", "date_captured")]

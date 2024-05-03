@@ -13,7 +13,7 @@ library("dplyr")
 # In this case [373, 1]
 
 # Load occupancy rasters into a multilayer brick
-occ_rast_files <- list.files(here("spOccupancy", "data", "occ"),
+occ_rast_files <- list.files(here:here("spOccupancy", "Data", "occ"),
                              pattern = "\\.tif$",
                              full.names = TRUE)
 occ_rast_list <- list()
