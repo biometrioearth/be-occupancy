@@ -13,7 +13,7 @@ library("dplyr")
 # In this case [373, 1]
 
 # Load occupancy rasters into a multilayer brick
-occ_rast_files <- list.files(here:here("spOccupancy", "Data", "occ"),
+occ_rast_files <- list.files(here("spOccupancy", "Data", "500m_resampled", "Occu"),
                              pattern = "\\.tif$",
                              full.names = TRUE)
 occ_rast_list <- list()
@@ -28,12 +28,12 @@ occ_rast <- rast(occ_rast_list)
 
 # Create sampling points to extract
 samp_coords <- cam_data[!duplicated(cam_data[,c("latitude", "longitude")]),
-                        c("latitude", "longitude", "sampling_area")]
+                        c("latitude", "longitude", "sampling_area")] ##devices
 
 samp_coords_grouped <- group_by(samp_coords, sampling_area)
 sampling_points <- summarise(samp_coords_grouped,
                              x = mean(longitude),
-                             y = mean(latitude))
+                             y = mean(latitude)) ##create node coordinates
 
 sampling_points <- vect(sampling_points,
                         geom=c("x", "y"),
@@ -42,7 +42,7 @@ sampling_points <- vect(sampling_points,
 # Extract data from rasters to points
 extracted_covs <- extract(occ_rast, sampling_points)
 names(extracted_covs)
-names(extracted_covs) <- c("ID","d2roads", "d2protec", "asterdem", "asterslope", "esalc", "theight")
+names(extracted_covs) <- c("ID", "d2protec","d2roads", "asterdem", "asterslope", "theight")
 extracted_covs
 sampling_points$ID <- 1:9
 sampling_points <- merge(sampling_points, extracted_covs, by = "ID")

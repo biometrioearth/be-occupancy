@@ -11,7 +11,7 @@ library("lubridate")
 # [species, sampling sites, sampling surveys]
 # In this case [12, 373, 3]
 
-setwd("C:/Users/AmaBoakye/Work/Occupancy_Modelling")
+
 
 cam_data <- read.csv(here("spOccupancy", "Data", "ama_detections_fix 1.csv")) 
 
@@ -34,12 +34,12 @@ y <- array(0, c(length(unique(cam_data$species)),
 row.names(y) <- unique(cam_data$species)
 
 # Now lets fill in the detections with 3 loops
-months <- 10:12
+months <- 10:12 ##October to December
 nmonths <- 1:3
 species <- unique(cam_data$species)
-nsp <- 1:length(species)
+nsp <- 1:length(species) ##number of species
 sites <- unique(cam_data$sampling_area)
-nsites <- 1:length(sites)
+nsites <- 1:length(sites) #nodes
 
 # Add month variable to camera data 
 cam_data$date_captured

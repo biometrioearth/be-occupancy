@@ -23,7 +23,7 @@ y
 
 # Load occ.cov and sampling sites
 sampling_sites <- vect("sampling_points.shp")
-occ.cov <- sampling_sites[,c("d2roads", "d2protec", "asterdem", "asterslope", "theight")]
+occ.cov <- sampling_sites[,c( "d2protec", "d2roads", "asterdem", "asterslope", "theight")]
 occ.cov <- data.matrix(as.data.frame(occ.cov))
 head(occ.cov)
 
@@ -55,7 +55,7 @@ out <- spPGOcc(occ.formula = occ.formula,
                n.thin = 4, n.chains = 3, verbose = FALSE, k.fold = 9)
 
 ## Predict on whole area
-occ_rast_files <- list.files("C:/Users/AmaBoakye/Work/Occupancy_Modelling//spOccupancy/Data/500m_resampled/Occu/",
+occ_rast_files <- list.files(here("spOccupancy","Data", "500m_resampled","Occu"),
                              pattern = "\\.tif$",
                              full.names = TRUE)
 
@@ -72,7 +72,7 @@ occ_rast <- rast(occ_rast_list)
 
 # Occupancy data frame
 occ_df <- as.data.frame(occ_rast, cell=TRUE)
-names(occ_df)<- c("cell", "d2protec", "d2roads","asterdem","esaglc", "asterslope", "theight")
+names(occ_df)<- c("cell", "d2protec", "d2roads","asterdem", "asterslope", "theight")
 occ_df <- occ_df[complete.cases(occ_df),]
 
 

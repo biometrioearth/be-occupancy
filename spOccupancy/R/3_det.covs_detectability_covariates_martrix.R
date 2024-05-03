@@ -11,7 +11,8 @@ library("lubridate")
 # In this case [2] * [3, 373]
 
 # Load occupancy rasters into a multilayer brick
-det_rast_files <- list.files(here("spOccupancy", "data", "det"),
+
+det_rast_files <- list.files(here("spOccupancy", "Data", "500m_resampled", "detect"),
                              pattern = "\\.tif$",
                              full.names = TRUE)
 det_rast_list <- list()
