@@ -7,6 +7,9 @@ det.covs <- readRDS("det_covs.RDS")
 coords <- geom(sampling_sites)[, c("x", "y")]
 coords <- data.matrix(coords)
 
+species_names <- rownames(y)
+species_names[is.na(species_names)] <- "Unknown_Species"
+
 # Load prediction raster files
 occ_rast_files <- list.files(here("spOccupancy","Data", "500m_resampled","Occu"),
                              pattern = "\\.tif$",
@@ -24,11 +27,19 @@ for (r in occ_rast_files){
 occ.formula <- ~ scale(d2roads) + scale(d2protec) + I(scale(asterdem)) + scale(asterslope) + scale(theight)
 det.formula <- ~ I(scale(month)) + scale(lai) + scale(pre) + scale(tem)
 
+# Prepare Output folders
+folders <- c("Mean", "SD", "Deviance")
+lapply(folders, function(x) if (!dir.exists(file.path("Results", x))) dir.create(file.path("Results", x), recursive = TRUE))
+
+results_df <- data.frame(Species = character(), Deviance = numeric(), stringsAsFactors = FALSE)
+
 # Iterate over each species
 for (i in 1:dim(y)[1]) {
- # i=1
+  # i=1
   print(i)
-#attach names to output files
+  #attach names to output files
+  
+  
   # Subset data for the current species
   y_i <- y[i,,]
   
@@ -45,7 +56,7 @@ for (i in 1:dim(y)[1]) {
                  accept.rate = 0.43, cov.model = "exponential", 
                  NNGP = TRUE, n.neighbors = 1, n.burn = 2000, 
                  n.thin = 4, n.chains = 3, verbose = FALSE, k.fold = 9)
-
+  
   print("outmodel_done")
   # Predict on whole area
   occ_df <- as.data.frame(occ_rast, cell = TRUE)
@@ -74,8 +85,8 @@ for (i in 1:dim(y)[1]) {
   z[occ_df$cell] <- mean.psi
   #plot(z)  
   z[z > 1] <- NA
- # plot(z)  
-  writeRaster(z, filename = paste0("predicted_occupancy_species_MEAN_", i, ".tif"), overwrite = TRUE)
+  # plot(z)  
+  writeRaster(z, filename = file.path("Results", "Mean", paste0("predicted_occupancy_species_MEAN_",  species_names[i], ".tif")), overwrite = TRUE)
   
   
   # Write predicted occupancy to sd raster
@@ -83,12 +94,20 @@ for (i in 1:dim(y)[1]) {
   z[occ_df$cell] <- sd.psi
   #plot(z)  
   z[z > 1] <- NA
- # plot(z)  
-  writeRaster(z, filename = paste0("predicted_occupancy_species_SD_", i, ".tif"), overwrite = TRUE)
+  # plot(z)  
+  writeRaster(z, filename = file.path("Results", "SD", paste0("predicted_occupancy_species_SD_",  species_names[i], ".tif")), overwrite = TRUE)
   ## DEVIANCES
   deviance_i <- out$k.fold.deviance
-  saveRDS(deviance_i, paste0("deviance_", i, ".RDS"))
+  saveRDS(deviance_i, file.path("Results", "Deviance", paste0("deviance_",  species_names[i], ".RDS")))
+  
+  # save all Deviance values a single csv file
+  # Append results to data frame
+  results_df <- rbind(results_df, data.frame(Species = species_names[i], Deviance = deviance_i))
 }
+
+#export csv for deviance
+write.csv(results_df, file.path("Results", "Deviance", "species_deviances.csv"), row.names = FALSE)
+
 
 ##species richness
 raster_path <- here("Results", "Mean")
