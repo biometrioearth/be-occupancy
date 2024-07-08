@@ -1,0 +1,138 @@
+
+### this workflow is to pre-process the in-situ data to weekly, biweekly and monthly
+#temporal aggregates for the occupancy models
+
+## function to read files based on extension
+read_data <- function(file) {
+  ext <- file_ext(file)
+  if (ext == "csv") {
+    return(read.csv(here("Data", "In_situ_data", file)))
+  } else if (ext == "xlsx") {
+    return(read_excel(here("Data", "In_situ_data", file)))
+  } else if (ext == "txt") {
+    return(read_delim(here("Data", "In_situ_data", file), delim = "\t"))
+  } else {
+    stop("Unsupported file extension")
+  }
+}
+
+# Function to filter data based on threshold(video) or score(audio)
+
+filter_data <- function(df, threshold) {
+ 
+  column_name <- if ("score" %in% names(df)) {
+    "score"
+  } else if ("confidence" %in% names(df)) {
+    "confidence"
+  } else {
+    stop("Neither 'score' nor 'confidence' columns are present in the dataframe.")
+  }
+  # Return filtered data
+  return(df[df[[column_name]] > threshold, ])
+}
+  
+# Create spatial data
+create_spatial_data <- function(df, columns) {
+  df_spatial <- df[, columns]
+  coordinates(df_spatial) <- ~longitude + latitude
+  return(df_spatial)
+}
+
+
+# Process date information
+date_information <- function(df) {
+  df$lubdate <- ymd_hms(df$local_datetime)
+  df$year <- year(df$lubdate)
+  df$month <- month(df$lubdate)
+  df$day <- day(df$lubdate)
+  start_date <- min(df$lubdate, na.rm = TRUE)
+  df$week <- as.integer((as.numeric(difftime(df$lubdate, start_date, units = "days")) %/% 7) + 1)
+  df$biweekly <- as.integer((as.numeric(difftime(df$lubdate, start_date, units = "days")) %/% 14) + 1)
+  return(df)
+}
+
+# Create  detection array
+create_detection_array <- function(dt_df, period, output_file) {
+  # Define unique values
+  species <- unique(dt_df$species)
+  sites <- unique(dt_df$device)
+  
+  if (period == "weekly") {
+    weeks <- unique(dt_df$week)
+    nweeks <- 1:length(weeks)
+    data_video <- array(0, c(length(species), length(sites), length(nweeks)))
+    row.names(data_video) <- species
+    dt_df$week
+    
+    for (week in nweeks) {
+      for (sp in 1:length(species)) {
+        for (site in 1:length(sites)) {
+          week_name <- weeks[week]
+          species_name <- species[sp]
+          site_name <- sites[site]
+          
+          cam_data_subset <- dt_df[dt_df$week == week_name &
+                                     dt_df$species == species_name &
+                                     dt_df$device == site_name, ]
+          if (nrow(cam_data_subset) != 0) {
+            data_video[sp, site, week] <- 1 
+          }
+        }
+      }
+    }
+    saveRDS(data_video, output_file)
+  } else if (period == "biweekly") {
+    biweeks <- unique(dt_df$biweekly)
+    nbiweeks <- 1:length(biweeks)
+    data_video <- array(0, c(length(species), length(sites), length(nbiweeks)))
+    row.names(data_video) <- species
+    dt_df$biweekly
+    
+    for (biweek in nbiweeks) {
+      for (sp in 1:length(species)) {
+        for (site in 1:length(sites)) {
+          biweek_name <- biweeks[biweek]
+          species_name <- species[sp]
+          site_name <- sites[site]
+          
+          cam_data_subset <- dt_df[dt_df$biweekly == biweek_name &
+                                     dt_df$species == species_name &
+                                     dt_df$device == site_name, ]
+          if (nrow(cam_data_subset) != 0) {
+            data_video[sp, site, biweek] <- 1
+          }
+        }
+      }
+    }
+    saveRDS(data_video, output_file)
+  } else if (period == "monthly") {
+    months <- unique(dt_df$month)
+    nmonths <- 1:length(months)
+    data_video <- array(0, c(length(species), length(sites), length(nmonths)))
+    row.names(data_video) <- species
+    dt_df$month
+    
+    for (month in nmonths) {
+      for (sp in 1:length(species)) {
+        for (site in 1:length(sites)) {
+          month_name <- months[month]
+          species_name <- species[sp]
+          site_name <- sites[site]
+          
+          cam_data_subset <- dt_df[dt_df$month == month_name &
+                                     dt_df$species == species_name &
+                                     dt_df$device == site_name, ]
+          if (nrow(cam_data_subset) != 0) {
+            data_video[sp, site, month] <- 1
+          }
+        }
+      }
+    }
+    saveRDS(data_video, output_file)
+  } else {
+    stop("Invalid period specified. Choose 'weekly', 'biweekly', or 'monthly'.")
+  }
+  
+  return(data_video)
+}
+

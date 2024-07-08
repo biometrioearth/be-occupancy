@@ -1,0 +1,110 @@
+ ../.gitignore
+        ../21.05.2024/Data
+        ../21.05.2024/Trial.Rproj
+        ../21.05.2024/data_audio_biweekly.RDS
+        ../21.05.2024/data_audio_monthly.RDS
+        ../21.05.2024/data_audio_weekly.RDS
+        ../21.05.2024/data_video_biweekly.RDS
+        ../21.05.2024/data_video_monthly.RDS
+        ../21.05.2024/data_video_weekly.RDS
+        ../PROBABILITY_JAGUAR.png
+        ../PROBABILITY_WHITE TAILED DERR.png
+        ../Results/
+        ../Results_bioacoustics/
+        ../SD_5.png
+        ../SD_99.png
+        ../SD_JAGUAR.png
+        ../Species_richness_Occupancy_Northern_cluster.tif
+        ../Species_richness_Occupancy_Northern_cluster.tif.aux.xml
+        ../Species_richness_bioacoustics_Northern_cluster.tif
+        ../WHITE.png
+        ../be-occupancy.Rproj
+        ../bioacoustic_det_covs.RDS
+        ../bioacoustics species_richness.tif
+        ../bioacoustics species_richness.tif.aux.xml
+        ../camera trap species richness.tif
+        ../camera trap species richness.tif.aux.xml
+        ../collard_percary.tif
+        ../collard_percary.tif.aux.xml
+        ../det_covs.RDS
+        ../old_data/
+        ../predicted_occupancy.tif
+        ../predicted_occupancy_species_1.tif
+        ../predicted_occupancy_species_2.tif
+        ../predicted_occupancy_species_3.tif
+        ../predicted_occupancy_species_4.tif
+        ../predicted_occupancy_species_5.tif
+        ../probability_yellow amazon.png
+        ../probabilty_wood.png
+        ../sampling_bioacoustics.cpg
+        ../sampling_bioacoustics.dbf
+        ../sampling_bioacoustics.prj
+        ../sampling_bioacoustics.shp
+        ../sampling_bioacoustics.shx
+        ../sampling_points.cpg
+        ../sampling_points.dbf
+        ../sampling_points.prj
+        ../sampling_points.shp
+        ../sampling_points.shx
+        ../spOccupancy/Data/
+        ../spOccupancy/R/y.RDS
+        ../y.RDS
+        ../y_bioacoustic.RDS
+        ../New_occupancy/Data/
+        ../New_occupancy/_targets/
+        ../old_data
+   ../.gitignore
+        ../21.05.2024/Data/
+        ../21.05.2024/Trial.Rproj
+        ../21.05.2024/data_audio_biweekly.RDS
+        ../21.05.2024/data_audio_monthly.RDS
+        ../21.05.2024/data_audio_weekly.RDS
+        ../21.05.2024/data_video_biweekly.RDS
+        ../21.05.2024/data_video_monthly.RDS
+        ../21.05.2024/data_video_weekly.RDS
+        ./
+        ../PROBABILITY_JAGUAR.png
+        ../PROBABILITY_WHITE TAILED DERR.png
+        ../Results/
+        ../Results_bioacoustics/
+        ../SD_5.png
+        ../SD_99.png
+        ../SD_JAGUAR.png
+        ../Species_richness_Occupancy_Northern_cluster.tif
+        ../Species_richness_Occupancy_Northern_cluster.tif.aux.xml
+        ../Species_richness_bioacoustics_Northern_cluster.tif
+        ../WHITE.png
+        ../be-occupancy.Rproj
+        ../bioacoustic_det_covs.RDS
+        ../bioacoustics species_richness.tif
+        ../bioacoustics species_richness.tif.aux.xml
+        ../camera trap species richness.tif
+        ../camera trap species richness.tif.aux.xml
+        ../collard_percary.tif
+        ../collard_percary.tif.aux.xml
+        ../det_covs.RDS
+        ../old_data/
+        ../predicted_occupancy.tif
+        ../predicted_occupancy_species_1.tif
+        ../predicted_occupancy_species_2.tif
+        ../predicted_occupancy_species_3.tif
+        ../predicted_occupancy_species_4.tif
+        ../predicted_occupancy_species_5.tif
+        ../probability_yellow amazon.png
+        ../probabilty_wood.png
+        ../sampling_bioacoustics.cpg
+        ../sampling_bioacoustics.dbf
+        ../sampling_bioacoustics.prj
+        ../sampling_bioacoustics.shp
+        ../sampling_bioacoustics.shx
+        ../sampling_points.cpg
+        ../sampling_points.dbf
+        ../sampling_points.prj
+        ../sampling_points.shp
+        ../sampling_points.shx
+        ../spOccupancy/Data/
+        ../spOccupancy/R/y.RDS
+        ../y.RDS
+        ../y_bioacoustic.RDS
+
+
