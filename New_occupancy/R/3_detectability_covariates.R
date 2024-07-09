@@ -28,11 +28,11 @@ load_rasters <- function(frequency, ref_raster_path) {
                          "monthly" = "Monthly",
                          stop("Invalid frequency type"))
   
-  # Identify all folders with the specified frequency in their names within the Detect folder
+  # Identify all folders with the specified frequency in their names within the Detectability folder
   det_rast_files <- list.dirs(here("Data", "Detect"), recursive = TRUE, full.names = TRUE)
   det_rast_files <- det_rast_files[grepl(path_pattern, det_rast_files)]
   
-  # Initialize an empty list to store raster objects
+
   det_rast_list <- list()
   counter <- 0
   
@@ -70,7 +70,7 @@ load_sampling_sites <- function(type, frequency) {
   filename <- paste0("sampling_points_", type, "_", frequency, ".shp")
   
 
-  shapefile_path <- here(filename)
+  shapefile_path <- here("Data","Processed",filename)
   # Load the shapefile
   sampling_sites <- vect(shapefile_path)
   num_points <- nrow(sampling_sites)
@@ -78,4 +78,11 @@ load_sampling_sites <- function(type, frequency) {
   
   
   return(sampling_sites)
+}
+
+create_matrix <- function(sampling_sites, num_groups) {
+  num_sites <- nrow(sampling_sites)
+  empty_matrix <- matrix(0, num_sites, num_groups)
+  
+  return(empty_matrix)
 }

@@ -1,8 +1,4 @@
-
-### this workflow is to pre-process the in-situ data to weekly, biweekly and monthly
-#temporal aggregates for the occupancy models
-
-## function to read files based on extension
+# Function to read files based on extension
 read_data <- function(file) {
   ext <- file_ext(file)
   if (ext == "csv") {
@@ -16,10 +12,8 @@ read_data <- function(file) {
   }
 }
 
-# Function to filter data based on threshold(video) or score(audio)
-
+# Function to filter data based on threshold
 filter_data <- function(df, threshold) {
- 
   column_name <- if ("score" %in% names(df)) {
     "score"
   } else if ("confidence" %in% names(df)) {
@@ -27,19 +21,17 @@ filter_data <- function(df, threshold) {
   } else {
     stop("Neither 'score' nor 'confidence' columns are present in the dataframe.")
   }
-  # Return filtered data
   return(df[df[[column_name]] > threshold, ])
 }
-  
-# Create spatial data
+
+# Function to create spatial data
 create_spatial_data <- function(df, columns) {
   df_spatial <- df[, columns]
   coordinates(df_spatial) <- ~longitude + latitude
   return(df_spatial)
 }
 
-
-# Process date information
+# Function to process date information
 date_information <- function(df) {
   df$lubdate <- ymd_hms(df$local_datetime)
   df$year <- year(df$lubdate)
@@ -51,9 +43,8 @@ date_information <- function(df) {
   return(df)
 }
 
-# Create  detection array
-create_detection_array <- function(dt_df, period, output_file) {
-  # Define unique values
+# Function to create detection array
+create_detection_array <- function(dt_df, period) {
   species <- unique(dt_df$species)
   sites <- unique(dt_df$device)
   
@@ -62,7 +53,6 @@ create_detection_array <- function(dt_df, period, output_file) {
     nweeks <- 1:length(weeks)
     data_video <- array(0, c(length(species), length(sites), length(nweeks)))
     row.names(data_video) <- species
-    dt_df$week
     
     for (week in nweeks) {
       for (sp in 1:length(species)) {
@@ -80,13 +70,11 @@ create_detection_array <- function(dt_df, period, output_file) {
         }
       }
     }
-    saveRDS(data_video, output_file)
   } else if (period == "biweekly") {
     biweeks <- unique(dt_df$biweekly)
     nbiweeks <- 1:length(biweeks)
     data_video <- array(0, c(length(species), length(sites), length(nbiweeks)))
     row.names(data_video) <- species
-    dt_df$biweekly
     
     for (biweek in nbiweeks) {
       for (sp in 1:length(species)) {
@@ -104,13 +92,11 @@ create_detection_array <- function(dt_df, period, output_file) {
         }
       }
     }
-    saveRDS(data_video, output_file)
   } else if (period == "monthly") {
     months <- unique(dt_df$month)
     nmonths <- 1:length(months)
     data_video <- array(0, c(length(species), length(sites), length(nmonths)))
     row.names(data_video) <- species
-    dt_df$month
     
     for (month in nmonths) {
       for (sp in 1:length(species)) {
@@ -128,7 +114,6 @@ create_detection_array <- function(dt_df, period, output_file) {
         }
       }
     }
-    saveRDS(data_video, output_file)
   } else {
     stop("Invalid period specified. Choose 'weekly', 'biweekly', or 'monthly'.")
   }
@@ -136,3 +121,13 @@ create_detection_array <- function(dt_df, period, output_file) {
   return(data_video)
 }
 
+# Function to preprocess data
+pre_process_data <- function(file_name, threshold, data_type, period) {
+  dt_df <- read_data(file_name)
+  dt_df <- filter_data(dt_df, threshold)
+  dt_df <- date_information(dt_df)
+  dt_df_spatial <- create_spatial_data(dt_df, c("species", "longitude", "latitude"))
+  
+  detection_array <- create_detection_array(dt_df, period)
+  return(detection_array)
+}

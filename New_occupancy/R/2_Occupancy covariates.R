@@ -50,10 +50,10 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   
   # Extract data from rasters to points
   extracted_covs <- extract(occ_rast, sampling_points)
-  names(extracted_covs) <- c("ID", "bare_sparse_vege", "biomass", "builtup", "canopyheight", 
-                             "cropland", "dem", "dist_roads", "fire_count", "fire_distance",
-                             "grassland", "herbaceous_wetland", "mangroves", "connectivity", "dist_protected",
-                             "shrubland", "slope", "tree_cover_loss_prop", "tree_cover", "water_dist", "prop_waterbodies")
+  #names(extracted_covs) <- c("ID", "bare_sparse_vege", "biomass", "builtup", "canopyheight", 
+                            # "cropland", "dem", "dist_roads", "fire_count", "fire_distance",
+                             #"grassland", "herbaceous_wetland", "mangroves", "connectivity", "dist_protected",
+                             #"shrubland", "slope", "tree_cover_loss_prop", "tree_cover", "water_dist", "prop_waterbodies")
   
   # Merge extracted covariates with sampling points
   sampling_points$ID <- 1:nrow(sampling_points)
@@ -61,7 +61,8 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   
   # Save the results to a shapefile with period and data type in the name
   shapefile_name <- paste0("sampling_points_", data_type, "_", period, ".shp")
-  writeVector(sampling_points, shapefile_name, overwrite = TRUE)
+  output_file <- here("Data", "Processed", shapefile_name)
+  writeVector(sampling_points, output_file, overwrite = TRUE)
   
   return(sampling_points)
 }
