@@ -1,5 +1,5 @@
 # Load data
-y <- readRDS(here("Data","Processed","video_monthly_detection_array.RDS")) # [50species, 37 sampling points (devices), 6 months]
+y <- readRDS(here("Data","Processed","video_monthly_detection_array.RDS")) # [50species, 140 sampling points (devices), 6 months]
 
 sampling_sites <- vect(here("Data","Processed","sampling_points_video_monthly.shp"))
 occ.cov <- sampling_sites[, c( "bare_spar0", "biomass_m0", "builtup_m0", "canopyhei0", 
@@ -8,7 +8,7 @@ occ.cov <- sampling_sites[, c( "bare_spar0", "biomass_m0", "builtup_m0", "canopy
                               "tree_cove0", "tree_cove1", "water_dis0", "waterbodi0")]
 
 occ.cov <- data.matrix(as.data.frame(occ.cov))
-det.covs <- readRDS(here("Data","Processed","monthly_det_covs.RDS")) 
+det.covs <- readRDS(here("Data","Processed","period_det_covs.RDS")) #must be data matrix
 coords <- geom(sampling_sites)[, c("x", "y")]
 coords <- data.matrix(coords)
 
@@ -35,17 +35,17 @@ det.formula <- ~ I(scale(month)^2) + scale(lai) + scale(pre) + scale(tem) + scal
 
 # Iterate over each species
 for (i in 1:dim(y)[1]) {
-  # i=1
+  i=1
   print(i)
   #attach names to output files
   # Subset data for the current species
   y_i <- y[i,,]
   
-  print("species_done")
+  
   # Prepare the data list for the model
   occ_table <- list(y = y_i, occ.covs = occ.cov, det.covs = det.covs, coords = coords)
   
-  occ.formula <- ~ scale(bare_spar0) + scale(biomass_m0) ++ scale(builtup_m0)+ I(scale(canopyhei0)^2)+ 
+  occ.formula <- ~ scale(bare_spar0) + scale(biomass_m0) + scale(builtup_m0)+ I(scale(canopyhei0)^2)+ 
     scale(cropland_0) +scale(dem_match0) + scale(dist_road0) +scale(fire_coun0) + 
     scale(fire_dist0) +scale(grassland0) + scale(herbaceou0) +scale(mangroves0) +
     scale(permeabil0) +scale(protected0) + scale(shrubland0) + scale(slope_mat0) +
@@ -53,7 +53,7 @@ for (i in 1:dim(y)[1]) {
   
   
   det.formula <- ~ I(scale(month)^2) + scale(lai) + scale(pre) + scale(tem) + scale(fapar)
-  
+  print("species_done")
   out <- spPGOcc(occ.formula = occ.formula,
                  det.formula = det.formula,
                  data = occ_table, n.batch = 400, batch.length = 25,
@@ -117,7 +117,7 @@ for (i in 1:dim(y)[1]) {
   
   
   # Write predicted occupancy to sd raster
-  z <- rast(here::here("Data", "Covariates", "Monthly", "resampled_images_occ", "_dist2roads_cropped_cropped.tif"))
+  z <- rast(here::here("Data", "Occupancy_Species","mask.tif"))
   z[occ_df$cell] <- sd.psi
   #plot(z)  
   z[z > 1] <- NA

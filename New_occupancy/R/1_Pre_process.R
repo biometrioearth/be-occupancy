@@ -46,7 +46,7 @@ date_information <- function(df) {
 # Function to create detection array
 create_detection_array <- function(dt_df, period) {
   species <- unique(dt_df$species)
-  sites <- unique(dt_df$device)
+  sites <- unique(dt_df$sampling_point_id)
   
   if (period == "weekly") {
     weeks <- unique(dt_df$week)
@@ -63,7 +63,7 @@ create_detection_array <- function(dt_df, period) {
           
           cam_data_subset <- dt_df[dt_df$week == week_name &
                                      dt_df$species == species_name &
-                                     dt_df$device == site_name, ]
+                                     dt_df$sampling_point_id == site_name, ]
           if (nrow(cam_data_subset) != 0) {
             data_video[sp, site, week] <- 1 
           }
@@ -85,7 +85,7 @@ create_detection_array <- function(dt_df, period) {
           
           cam_data_subset <- dt_df[dt_df$biweekly == biweek_name &
                                      dt_df$species == species_name &
-                                     dt_df$device == site_name, ]
+                                     dt_df$sampling_point_id == site_name, ]
           if (nrow(cam_data_subset) != 0) {
             data_video[sp, site, biweek] <- 1
           }
@@ -107,7 +107,7 @@ create_detection_array <- function(dt_df, period) {
           
           cam_data_subset <- dt_df[dt_df$month == month_name &
                                      dt_df$species == species_name &
-                                     dt_df$device == site_name, ]
+                                     dt_df$sampling_point_id == site_name, ]
           if (nrow(cam_data_subset) != 0) {
             data_video[sp, site, month] <- 1
           }

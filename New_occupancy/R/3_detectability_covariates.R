@@ -1,3 +1,5 @@
+config <- read.config(here("Config","detectability_cov.yaml"))
+
 extend_resample_to_match <- function(rasters, ref_raster_path) {
   # Load the reference raster
   ref_raster <- rast(ref_raster_path)
@@ -57,9 +59,9 @@ load_rasters <- function(frequency, ref_raster_path) {
   return(processed_rast_list)
 }
 
-load_sampling_sites <- function(type, frequency) {
+load_sampling_sites <- function(data_type, frequency) {
   # Validate the type
-  if (!type %in% c("audio", "video")) {
+  if (!data_type %in% c("audio", "video")) {
     stop("Invalid type. Must be 'audio' or 'video'.")
   }
   # Validate the frequency
@@ -67,7 +69,7 @@ load_sampling_sites <- function(type, frequency) {
     stop("Invalid frequency. Must be 'weekly', 'biweekly', or 'monthly'.")
   }
   # Construct the filename based on type and frequency
-  filename <- paste0("sampling_points_", type, "_", frequency, ".shp")
+  filename <- paste0("sampling_points_", data_type, "_", frequency, ".shp")
   
 
   shapefile_path <- here("Data","Processed",filename)

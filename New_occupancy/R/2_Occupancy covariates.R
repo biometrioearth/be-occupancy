@@ -1,15 +1,18 @@
 #####this function creates the occupancy covariates
 # Create sampling points to extract
-filter_duplicates <- function(period) {
+
+#####this function creates the occupancy covariates
+# Create sampling points to extract
+filter_duplicates <- function(dt_df,period) {
   if (period == "monthly") {
-    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "device", "month")]),
-                             c("latitude", "longitude", "device", "month")]
+    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "sampling_point_id")]),
+                             c("latitude", "longitude", "sampling_point_id")]
   } else if (period == "weekly") {
-    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "device", "week")]),
-                             c("latitude", "longitude", "device", "week")]
+    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "sampling_point_id")]),
+                             c("latitude", "longitude", "sampling_point_id")]
   } else if (period == "biweekly") {
-    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "device", "biweekly")]),
-                             c("latitude", "longitude", "device", "biweekly")]
+    samp_duplicates <- dt_df[!duplicated(dt_df[, c("latitude", "longitude", "sampling_point_id")]),
+                             c("latitude", "longitude", "sampling_point_id")]
   } else {
     stop("Invalid period specified. Choose 'monthly', 'weekly', or 'biweekly'.")
   }
@@ -26,9 +29,9 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   dt_df <- read_data(file_name)
   dt_df <- filter_data(dt_df, threshold)
   dt_df <- date_information(dt_df)
-  dt_df_spatial <- create_spatial_data(dt_df, c("device", "species", "longitude", "latitude"))
+  dt_df_spatial <- create_spatial_data(dt_df, c("sampling_point_id", "species", "longitude", "latitude"))
   
- 
+  
   # Load raster files
   occ_rast_files <- list.files(here("Data", "Occupa"),
                                pattern = "\\.tif$",
@@ -51,9 +54,9 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   # Extract data from rasters to points
   extracted_covs <- extract(occ_rast, sampling_points)
   #names(extracted_covs) <- c("ID", "bare_sparse_vege", "biomass", "builtup", "canopyheight", 
-                            # "cropland", "dem", "dist_roads", "fire_count", "fire_distance",
-                             #"grassland", "herbaceous_wetland", "mangroves", "connectivity", "dist_protected",
-                             #"shrubland", "slope", "tree_cover_loss_prop", "tree_cover", "water_dist", "prop_waterbodies")
+  # "cropland", "dem", "dist_roads", "fire_count", "fire_distance",
+  #"grassland", "herbaceous_wetland", "mangroves", "connectivity", "dist_protected",
+  #"shrubland", "slope", "tree_cover_loss_prop", "tree_cover", "water_dist", "prop_waterbodies")
   
   # Merge extracted covariates with sampling points
   sampling_points$ID <- 1:nrow(sampling_points)
@@ -66,4 +69,3 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   
   return(sampling_points)
 }
-

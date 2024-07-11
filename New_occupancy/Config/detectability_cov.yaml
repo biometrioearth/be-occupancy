@@ -1,0 +1,9 @@
+ref_raster_path: "C:/Users/AmaBoakye/Work/be-occupancy/New_occupancy/Data/Occupa/dist_roads_matched.tif"
+data_directory: "Data"
+frequencies:
+  - weekly
+  - biweekly
+  - monthly
+data_types:
+  - audio
+  - video
