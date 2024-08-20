@@ -1,5 +1,5 @@
-// // AOI
-var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_nc");
+// // DEM.
+var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_geojson");
 Map.centerObject(AOI, 8);
 Map.addLayer(AOI)
 
@@ -12,7 +12,7 @@ Map.addLayer(AOI)
 //time period 
 var startDate = '2023-10-01';
 var endDate = '2024-03-31';
-/*
+
 // PRECIPITATION IN THE DRYEST MONTH
 var precipitation = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR") //1km spatial resolution
   .filterDate(startDate, endDate)
@@ -59,7 +59,7 @@ images.forEach(function(img, index) {
   exportVariable(img, 'precipitation_' + dates[index]);
 });
 
-*/
+
 
   //monthly
 var monthlyPrecipitation = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR") // 1km spatial resolution
@@ -81,7 +81,7 @@ function exportVariable(variable, variableName) {
     image: variable,
     description: variableName,
     folder: 'PRECIP_DAILY',
-    scale: 100,//1km for temp and prep 
+    scale: 500,//1km for temp and prep 
     region: AOI.geometry(),
     maxPixels: 1e13,
     crs: 'EPSG:4326',
@@ -126,8 +126,8 @@ var doExportDrive = function() {
       Export.image.toDrive({
         image: image.clip(AOI),
         region: AOI.geometry(),
-        scale: 1000,// 1km for precip and temp
-        fileNamePrefix: 'Monthly_precip_' + imageIds[i],
+        scale: 500,// 1km for precip and temp
+        fileNamePrefix: 'Monthly_precip_' + imageIds[i+1],
         folder: 'Monthly_precip',
         description: 'Monthly_precip' + i + '_' + imageIds[i],
       })
@@ -139,6 +139,7 @@ var doExportDrive = function() {
 print('Click button below to start export to Drive')
 var button = ui.Button({label: 'Export to Drive', onClick: doExportDrive})
 print(button)
+*/
 
 
 /// weekly composite
@@ -174,7 +175,7 @@ function exportVariable(variable, variableName, index) {
     image: variable,
     description: variableName + '_' + index + '_' + month,
     folder: 'Weekly_precip',
-    scale: 100, // 1km for temp and precip
+    scale: 500, // 1km for temp and precip
     region: AOI,
     maxPixels: 1e13,
     crs: 'EPSG:4326',
@@ -209,6 +210,7 @@ var doExportDrive = function() {
 // Start exporting to Drive directly
 doExportDrive();
 
+/*
 /// biweekly
 
 // Load daily precipitation data from ERA5-Land
@@ -242,7 +244,7 @@ function exportVariable(variable, variableName, index) {
     image: variable,
     description: variableName + '_' + index + '_' + month,
     folder: 'Biweekly_precip',
-    scale: 100, // 1km for temp and precip
+    scale: 500, // 1km for temp and precip
     region: AOI,
     maxPixels: 1e13,
     crs: 'EPSG:4326',
@@ -275,7 +277,7 @@ var doExportDrive = function() {
 // Start exporting to Drive directly
 doExportDrive();
 
-
+/*
 /// PRECIPITATION FOR  SEASON
 var precipitation = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR") //1km spatial resolution
   .filterDate(startDate, endDate)
@@ -299,17 +301,10 @@ Export.image.toDrive({
 });
 
 
-/// PCV (STANDARD DEVIATION===========================
-/*var meanImage = daily_pre.mean();
-var stdDevImage = daily_pre.reduce(ee.Reducer.stdDev());
-var cvImage = stdDevImage.divide(meanImage).multiply(100);
-Map.addLayer(cvImage, {min: 0, max: 100, palette: ['blue', 'green', 'red']}, 'Coefficient of Variation');
-Export.image.toDrive({
-  image: cvImage,
-  description: 'Precipitation_Coefficient_of_Variation',
-  scale: 1000,
-  region: AOI,
-  maxPixels: 1e13
-});
 
+Export.table.toDrive({
+  collection: AOI,
+  description: 'AOI_GeoJSON',
+  fileFormat: 'GeoJSON'
+});
 */

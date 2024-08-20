@@ -44,7 +44,7 @@ create_occupancy_covariates <- function(file_name, threshold, period) {
   occ_rast <- rast(occ_rast_list)
   
   # Filter duplicates based on the period
-  samp_duplicates <- filter_duplicates(period)
+  samp_duplicates <- filter_duplicates(dt_df, period)
   
   # Create sampling points
   sampling_points <- vect(samp_duplicates,

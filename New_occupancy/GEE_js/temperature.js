@@ -1,4 +1,4 @@
-var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_nc");
+var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_geojson");
 Map.centerObject(AOI, 8);
 Map.addLayer(AOI, {}, "AOI");
 
@@ -31,7 +31,7 @@ function exportVariable(variable, variableName) {
     image: variable,
     description: variableName,
     folder: 'TEMP_DAILY',
-    scale: 100, // 1km for temp and precip 
+    scale: 500, // 1km for temp and precip 
     region: AOI.geometry(),
     maxPixels: 1e13,
     crs: 'EPSG:4326',
@@ -63,7 +63,7 @@ var doExportDrive = function() {
       Export.image.toDrive({
         image: image.clip(AOI),
         region: AOI.geometry(),
-        scale: 100, // 1km for temp and precip
+        scale: 500, // 1km for temp and precip
         fileNamePrefix: 'Monthly_Temp_' + imageIds[i - 1], 
         folder: 'Monthly_Temp_',
         description: 'Monthly_Temp_' + i + '_' + imageIds[i - 1],
@@ -75,8 +75,10 @@ var doExportDrive = function() {
 print('Click button below to start export to Drive');
 var button = ui.Button({label: 'Export to Drive', onClick: doExportDrive});
 print(button);
+*/
 
 
+/*
 /// Weekly composite
 
 // Load daily temperature data from ERA5-Land
@@ -110,7 +112,7 @@ function exportVariable(variable, variableName, index) {
     image: variable,
     description: variableName + '_' + index + '_' + month,
     folder: 'Weekly_temp',
-    scale: 100, // 1km for temp and precip
+    scale: 500, // 1km for temp and precip
     region: AOI,
     maxPixels: 1e13,
     crs: 'EPSG:4326',
@@ -142,8 +144,8 @@ var doExportDrive = function() {
 
 // Start exporting to Drive directly
 doExportDrive();
-
 */
+
 
 
 // biweekly 
@@ -178,7 +180,7 @@ function exportVariable(variable, variableName, index) {
     image: variable,
     description: variableName + '_' + index + '_' + month,
     folder: 'Biweekly_temp',
-    scale: 100, // 1km for temp and precip
+    scale: 500, // 1km for temp and precip
     region: AOI,
     maxPixels: 1e13,
     crs: 'EPSG:4326',

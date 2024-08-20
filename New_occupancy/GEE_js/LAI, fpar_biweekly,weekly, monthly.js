@@ -1,4 +1,4 @@
-var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_nc");
+var AOI = ee.FeatureCollection("projects/ee-bioamaserwah/assets/AOI_geojson");
 Map.addLayer(AOI);
 Map.centerObject(AOI, 10);
 
@@ -55,6 +55,7 @@ exportImageCollectionToDrive(clippedNpp, 'NPP');
 var fstartDate = '2023-10-01';
 var fendDate = '2024-03-31';
 
+/*
 var calculateMonthlyComposites = function(collection, startDate, endDate) {
     var start = ee.Date(fstartDate);
     var end = ee.Date(fendDate);
@@ -69,7 +70,7 @@ var calculateMonthlyComposites = function(collection, startDate, endDate) {
 
     return monthlyComposites;
 };
-/*
+
 var monthlyLAIComposites = calculateMonthlyComposites(lai, startDate, endDate);
 var monthlyFaparComposites = calculateMonthlyComposites(fapar, startDate, endDate);
 
@@ -100,10 +101,10 @@ function exportVariable(variable, variableName, folderName) {
       Export.image.toDrive({
         image: image.clip(AOI),
         region: AOI.geometry(),
-        scale: 100,
+        scale: 500,
         fileNamePrefix: variableName + '_' + month,
         folder: folderName,
-        description: 'Export_' + variableName + '_' + month,
+        description: variableName + '_' + month,
         fileFormat: 'GeoTIFF',
         crs: 'EPSG:4326',
         maxPixels: 1e13
@@ -114,17 +115,18 @@ function exportVariable(variable, variableName, folderName) {
 
 print('Click button below to start export to Drive');
 var button = ui.Button({label: 'Export LAI and FAPAR to Drive', onClick: function() {
-  exportVariable(clippedMonthlyLAIComposites, 'lai', 'LAI_Folder');
-  exportVariable(clippedMonthlyFaparComposites, 'fapar', 'FAPAR_Folder');
+  exportVariable(clippedMonthlyLAIComposites, 'lai', 'Monthly_LAI_Folder');
+  exportVariable(clippedMonthlyFaparComposites, 'fapar', 'Monthly_FAPAR_Folder');
 }});
 print(button);
 
-*/
+
 /*
 =========================================================================================
                     WEEKLY COMPOSITES 
 =========================================================================================
 */
+
 /*
 var calculateWeeklyComposites = function(collection, startDate, endDate) {
     var start = ee.Date(fstartDate);
@@ -171,10 +173,10 @@ function exportVariable(variable, variableName, folderName) {
       Export.image.toDrive({
         image: image.clip(AOI),
         region: AOI.geometry(),
-        scale: 100,
-        fileNamePrefix: variableName + '_' + week,
+        scale: 500,
+        fileNamePrefix: 'Weekly_'+ variableName + '_' + (i + 1) ,
         folder: folderName,
-        description:'Export'+ variableName + '_' + week,
+        description:  variableName + '_' + week + '_' + (i + 1),
         fileFormat: 'GeoTIFF',
         crs: 'EPSG:4326',
         maxPixels: 1e13
@@ -190,7 +192,6 @@ var button = ui.Button({label: 'Export LAI and FAPAR to Drive', onClick: functio
 }});
 print(button);
 */
-
 
 /*
 ===============================================================================================
@@ -258,8 +259,8 @@ function exportVariable(variable, variableName, folderName) {
 
 print('Click button below to start export to Drive');
 var button = ui.Button({label: 'Export LAI and FAPAR to Drive', onClick: function() {
-    exportVariable(clippedBiweeklyLAIComposites, 'lai', 'LAI_Folder');
-    exportVariable(clippedBiweeklyFaparComposites, 'fapar', 'FAPAR_Folder');
+    exportVariable(clippedBiweeklyLAIComposites, 'lai', 'Biweekly_LAI_Folder');
+    exportVariable(clippedBiweeklyFaparComposites, 'fapar', 'Biweekly_FAPAR_Folder');
     
 }});
 print(button);
